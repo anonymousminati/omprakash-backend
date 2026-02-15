@@ -85,4 +85,65 @@ export class AuthController {
             return res.status(500).json({ success: false, message: 'Internal server error' });
         }
     }
+
+    // Get current user profile
+    getMe = async (req: Request, res: Response) => {
+        try {
+            // @ts-ignore - User is attached by middleware
+            const userId = req.user?.id;
+
+            if (!userId) {
+                return res.status(401).json({ success: false, message: 'Unauthorized' });
+            }
+
+            const userWithRole = await this.userRepository.findOne({
+                where: { id: userId },
+                relations: ['role_relation', 'role_relation.permissions', 'role_relation.permissions.module']
+            });
+
+            if (!userWithRole) {
+                return res.status(404).json({ success: false, message: 'User not found' });
+            }
+
+            // Construct metadata
+            const can_read: string[] = [];
+            const can_create: string[] = [];
+            const can_update: string[] = [];
+            const can_delete: string[] = [];
+
+            if (userWithRole?.role_relation?.permissions) {
+                userWithRole.role_relation.permissions.forEach(p => {
+                    if (p.module) {
+                        if (p.can_read) can_read.push(p.module.key);
+                        if (p.can_create) can_create.push(p.module.key);
+                        if (p.can_update) can_update.push(p.module.key);
+                        if (p.can_delete) can_delete.push(p.module.key);
+                    }
+                });
+            }
+
+            const meta = {
+                modules: {
+                    can_read,
+                    can_create,
+                    can_update,
+                    can_delete
+                }
+            };
+
+            // Remove password from response
+            const { password_hash, ...userWithoutPassword } = userWithRole;
+
+            return res.status(200).json({
+                success: true,
+                data: {
+                    ...userWithoutPassword,
+                    meta
+                }
+            });
+        } catch (error) {
+            console.error('Get Me error:', error);
+            return res.status(500).json({ success: false, message: 'Internal server error' });
+        }
+    }
 }

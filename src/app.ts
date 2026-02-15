@@ -63,12 +63,30 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 app.use('/api/v1', router);
 
+// Handle 404s
+app.use((req, res, next) => {
+  res.status(404).json({ success: false, message: 'API route not found' });
+});
+
 app.use(errorHandler);
+
+import { createServer } from 'http';
+import { SocketService } from './services/socket.service';
+
+const httpServer = createServer(app);
+const socketService = SocketService.getInstance();
+
+// Initialize Socket.io with the same CORS options as Express
+socketService.initialize(httpServer, {
+  origin: "*", // Adjust as needed for production
+  methods: ["GET", "POST"]
+});
 
 AppDataSource.initialize()
   .then(() => {
     logger.info('Data Source has been initialized!');
-    app.listen(PORT, () => {
+    // Use httpServer.listen instead of app.listen
+    httpServer.listen(PORT, () => {
       console.log(`Server is running on http://localhost:${PORT}`);
     });
   })

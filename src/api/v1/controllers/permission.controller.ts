@@ -3,6 +3,7 @@ import { AppDataSource } from '../../../config/database';
 import { Permission } from '../../../models/Permission';
 import { Module } from '../../../models/Module';
 import { Role } from '../../../models/Role';
+import { SocketService } from '../../../services/socket.service';
 
 export class PermissionController {
     private permissionRepo = AppDataSource.getRepository(Permission);
@@ -80,6 +81,9 @@ export class PermissionController {
                 }
                 await this.permissionRepo.save(perm);
             }
+
+            // Emit real-time update event
+            SocketService.getInstance().emit('permissionsUpdated', { roleId });
 
             return res.status(200).json({ success: true, message: 'Permissions updated' });
         } catch (error) {
