@@ -38,13 +38,47 @@ export class AuthController {
                 { expiresIn: '24h' }
             );
 
+            const userWithRole = await this.userRepository.findOne({
+                where: { id: user.id },
+                relations: ['role_relation', 'role_relation.permissions', 'role_relation.permissions.module']
+            });
+
+            // Construct metadata
+            const can_read: string[] = [];
+            const can_create: string[] = [];
+            const can_update: string[] = [];
+            const can_delete: string[] = [];
+
+            if (userWithRole?.role_relation?.permissions) {
+                userWithRole.role_relation.permissions.forEach(p => {
+                    if (p.module) {
+                        if (p.can_read) can_read.push(p.module.key);
+                        if (p.can_create) can_create.push(p.module.key);
+                        if (p.can_update) can_update.push(p.module.key);
+                        if (p.can_delete) can_delete.push(p.module.key);
+                    }
+                });
+            }
+
+            const meta = {
+                modules: {
+                    can_read,
+                    can_create,
+                    can_update,
+                    can_delete
+                }
+            };
+
             // Remove password from response
-            const { password_hash, ...userWithoutPassword } = user;
+            const { password_hash, ...userWithoutPassword } = userWithRole || user;
 
             return res.status(200).json({
                 success: true,
                 token,
-                user: userWithoutPassword
+                user: {
+                    ...userWithoutPassword,
+                    meta // Attach meta to user object
+                }
             });
         } catch (error) {
             console.error('Login error:', error);

@@ -73,8 +73,64 @@ export class UserController {
             }
 
             return res.status(200).json({ success: true, message: 'User deleted successfully' });
-        } catch (error) {
+        } catch (error: any) {
             console.error('Delete user error:', error);
+            return res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+        }
+    }
+
+    get = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const user = await this.userRepository.findOne({ where: { id } });
+
+            if (!user) {
+                return res.status(404).json({ success: false, message: 'User not found' });
+            }
+
+            const { password_hash: _, ...userWithoutPassword } = user;
+            return res.status(200).json({ success: true, data: userWithoutPassword });
+        } catch (error) {
+            console.error('Get user error:', error);
+            return res.status(500).json({ success: false, message: 'Internal server error' });
+        }
+    }
+
+    update = async (req: Request, res: Response) => {
+        try {
+            const { id } = req.params;
+            const { name, email, password, role } = req.body;
+
+            const user = await this.userRepository.findOne({ where: { id } });
+
+            if (!user) {
+                return res.status(404).json({ success: false, message: 'User not found' });
+            }
+
+            if (name) user.name = name;
+            if (email) user.email = email;
+            if (password) {
+                const salt = await bcrypt.genSalt(10);
+                user.password_hash = await bcrypt.hash(password, salt);
+            }
+            if (role) {
+                const RoleRepo = AppDataSource.getRepository(Role);
+                const assignedRole = await RoleRepo.createQueryBuilder("role")
+                    .where("LOWER(role.name) = LOWER(:name)", { name: role })
+                    .getOne();
+
+                if (assignedRole) {
+                    user.role = assignedRole.name.toLowerCase();
+                    user.role_relation = assignedRole;
+                }
+            }
+
+            await this.userRepository.save(user);
+
+            const { password_hash: _, ...userWithoutPassword } = user;
+            return res.status(200).json({ success: true, data: userWithoutPassword });
+        } catch (error) {
+            console.error('Update user error:', error);
             return res.status(500).json({ success: false, message: 'Internal server error' });
         }
     }
