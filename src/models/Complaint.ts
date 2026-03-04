@@ -1,25 +1,43 @@
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column } from 'typeorm';
 import { Base } from './Base';
-import { User } from './User';
+
+export enum ComplaintStatus {
+    OPEN = "OPEN",
+    IN_PROGRESS = "IN_PROGRESS",
+    RESOLVED = "RESOLVED",
+    REJECTED = "REJECTED"
+}
 
 @Entity('complaints')
 export class Complaint extends Base {
     @Column()
-    title: string;
+    full_name: string;
+
+    @Column()
+    phone_number: string;
+
+    @Column({ nullable: true })
+    email_address: string;
+
+    @Column()
+    location: string;
+
+    @Column()
+    category: string;
+
+    @Column()
+    subject: string;
 
     @Column('text')
     description: string;
 
-    @Column({ default: 'PENDING' }) // PENDING, IN_PROGRESS, RESOLVED, REJECTED
-    status: string;
-
     @Column({ nullable: true })
-    image_url: string;
+    photo_url: string;
 
-    @Column()
-    user_id: string;
-
-    @ManyToOne(() => User, { onDelete: 'CASCADE' })
-    @JoinColumn({ name: 'user_id' })
-    user: User;
+    @Column({
+        type: "enum",
+        enum: ComplaintStatus,
+        default: ComplaintStatus.OPEN
+    })
+    status: ComplaintStatus;
 }
