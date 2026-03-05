@@ -50,10 +50,7 @@ app.get('/', (req, res) => {
   res.send('Server is running');
 });
 
-app.use((req, res, next) => {
-  logger.warn(`Unhandled request: ${req.method} ${req.url}`);
-  next();
-});
+// Remove false positive logger here
 
 import { Request, Response, NextFunction } from 'express';
 
@@ -65,6 +62,7 @@ app.use('/api/v1', router);
 
 // Handle 404s
 app.use((req, res, next) => {
+  logger.warn(`Unhandled request: ${req.method} ${req.url}`);
   res.status(404).json({ success: false, message: 'API route not found' });
 });
 
