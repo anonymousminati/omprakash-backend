@@ -8,7 +8,7 @@ export const AppDataSource = new DataSource({
     username: DB_USER || "root",
     password: DB_PASS || "",
     database: DB_NAME || "omprakash_db",
-    synchronize: true, // Only for dev!
+    synchronize: false, // Disabled for manual migrations
     logging: false,
     entities: ["src/models/*.ts"],
     subscribers: [],

@@ -5,11 +5,13 @@ import authRouter from './auth.routes';
 import userRouter from './user.routes';
 import rbacRouter from './rbac.routes';
 import complaintRouter from './complaint.routes';
+import contactRouter from './contact.routes';
 
 router.use('/innovations', innovationRouter);
 router.use('/auth', authRouter);
 router.use('/users', userRouter);
 router.use('/complaints', complaintRouter);
+router.use('/contacts', contactRouter);
 router.use('/rbac', rbacRouter);
 
 export default router;

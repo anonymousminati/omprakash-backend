@@ -18,6 +18,9 @@ const seedRBAC = async () => {
         const modulesData = [
             { key: 'users', name: 'User Management' },
             { key: 'innovations', name: 'Innovations' },
+            { key: 'complaints', name: 'Complaints' },
+            { key: 'contacts', name: 'Contacts' },
+            { key: 'roles', name: 'Roles & Permissions' },
         ];
 
         for (const m of modulesData) {

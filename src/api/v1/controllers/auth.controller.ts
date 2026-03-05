@@ -72,6 +72,8 @@ export class AuthController {
             // Remove password from response
             const { password_hash, ...userWithoutPassword } = userWithRole || user;
 
+            console.log("SENDING TO FRONTEND LOGIN:", { ...userWithoutPassword, meta });
+
             return res.status(200).json({
                 success: true,
                 token,

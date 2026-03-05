@@ -51,11 +51,6 @@ export const authorize = (moduleKey: string, action: 'create' | 'read' | 'update
                 return res.status(403).json({ success: false, message: 'Access denied: No role assigned' });
             }
 
-            // Superadmin bypass
-            if (user.role_relation.name === 'Superadmin') {
-                return next();
-            }
-
             // Check permissions
             const permission = user.role_relation.permissions.find(
                 p => p.module.key === moduleKey
