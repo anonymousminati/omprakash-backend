@@ -1,0 +1,147 @@
+[90m[4mquery:[24m[39m [94mSELECT[0m [95mversion[0m[37m([0m[37m)[0m
+[90m[4mquery:[24m[39m [94mSELECT[0m [37m*[0m [94mFROM[0m [37m`INFORMATION_SCHEMA`[0m[37m.[0m[37m`COLUMNS`[0m [94mWHERE[0m [37m`TABLE_SCHEMA`[0m [37m=[0m [37m'omprakash'[0m [94mAND[0m [37m`TABLE_NAME`[0m [37m=[0m [37m'migrations'[0m
+[90m[4mquery:[24m[39m [94mSELECT[0m [37m*[0m [94mFROM[0m [37m`omprakash`[0m[37m.[0m[37m`migrations`[0m [37m`migrations`[0m [94mORDER BY[0m [37m`id`[0m [94mDESC[0m
+[4m1 migrations are already loaded in the database.[24m
+[4m6 migrations were found in the source code.[24m
+[4mInitialSchema1771053853038 is the last executed migration. It was executed on Sat Feb 14 2026 12:54:13 GMT+0530 (India Standard Time).[24m
+[4m5 migrations are new migrations must be executed.[24m
+[90m[4mquery:[24m[39m [37mSTART[0m [37mTRANSACTION[0m
+[90m[4mquery:[24m[39m [94mSELECT[0m [37m*[0m [94mFROM[0m [37m`INFORMATION_SCHEMA`[0m[37m.[0m[37m`COLUMNS`[0m [94mWHERE[0m [37m`TABLE_SCHEMA`[0m [37m=[0m [37m'omprakash'[0m [94mAND[0m [37m`TABLE_NAME`[0m [37m=[0m [37m'roles'[0m
+[90m[4mquery:[24m[39m [94mSELECT[0m [37m*[0m [94mFROM[0m [37m`INFORMATION_SCHEMA`[0m[37m.[0m[37m`COLUMNS`[0m [94mWHERE[0m [37m`TABLE_SCHEMA`[0m [37m=[0m [37m'omprakash'[0m [94mAND[0m [37m`TABLE_NAME`[0m [37m=[0m [37m'modules'[0m
+[90m[4mquery:[24m[39m [94mSELECT[0m [37m*[0m [94mFROM[0m [37m`INFORMATION_SCHEMA`[0m[37m.[0m[37m`COLUMNS`[0m [94mWHERE[0m [37m`TABLE_SCHEMA`[0m [37m=[0m [37m'omprakash'[0m [94mAND[0m [37m`TABLE_NAME`[0m [37m=[0m [37m'permissions'[0m
+[90m[4mquery:[24m[39m [94mSELECT[0m [94mDATABASE[0m[37m([0m[37m)[0m [94mAS[0m [37m`db_name`[0m
+[90m[4mquery:[24m[39m [94mSELECT[0m [37m`TABLE_SCHEMA`[0m[37m,[0m [37m`TABLE_NAME`[0m[37m,[0m [37m`TABLE_COMMENT`[0m [94mFROM[0m [37m`INFORMATION_SCHEMA`[0m[37m.[0m[37m`TABLES`[0m [94mWHERE[0m [37m`TABLE_SCHEMA`[0m [37m=[0m [37m'omprakash'[0m [94mAND[0m [37m`TABLE_NAME`[0m [37m=[0m [37m'permissions'[0m
+[90m[4mquery:[24m[39m 
+                [94mSELECT[0m
+                    [37m*[0m
+                [94mFROM[0m
+                    [37m`INFORMATION_SCHEMA`[0m[37m.[0m[37m`COLUMNS`[0m
+                [94mWHERE[0m
+                    [37m`TABLE_SCHEMA`[0m [37m=[0m [37m'omprakash'[0m
+                    [94mAND[0m
+                    [37m`TABLE_NAME`[0m [37m=[0m [37m'permissions'[0m
+                
+[90m[4mquery:[24m[39m [94mSELECT[0m [37m*[0m [94mFROM[0m [37m([0m
+                [94mSELECT[0m
+                    [37m*[0m
+                [94mFROM[0m [37m`INFORMATION_SCHEMA`[0m[37m.[0m[37m`KEY_COLUMN_USAGE`[0m [37m`kcu`[0m
+                [94mWHERE[0m
+                    [37m`kcu`[0m[37m.[0m[37m`TABLE_SCHEMA`[0m [37m=[0m [37m'omprakash'[0m
+                    [94mAND[0m
+                    [37m`kcu`[0m[37m.[0m[37m`TABLE_NAME`[0m [37m=[0m [37m'permissions'[0m
+            [37m)[0m [37m`kcu`[0m [94mWHERE[0m [37m`CONSTRAINT_NAME`[0m [37m=[0m [37m'PRIMARY'[0m
+[90m[4mquery:[24m[39m 
+            [94mSELECT[0m
+                [37m`SCHEMA_NAME`[0m[37m,[0m
+                [37m`DEFAULT_CHARACTER_SET_NAME`[0m [94mas[0m [37m`CHARSET`[0m[37m,[0m
+                [37m`DEFAULT_COLLATION_NAME`[0m [94mAS[0m [37m`COLLATION`[0m
+            [94mFROM[0m [37m`INFORMATION_SCHEMA`[0m[37m.[0m[37m`SCHEMATA`[0m
+            
+[90m[4mquery:[24m[39m 
+            [94mSELECT[0m
+                [37m`s`[0m[37m.[0m[37m*[0m
+            [94mFROM[0m [37m([0m
+                [94mSELECT[0m
+                    [37m*[0m
+                [94mFROM[0m [37m`INFORMATION_SCHEMA`[0m[37m.[0m[37m`STATISTICS`[0m
+                [94mWHERE[0m
+                    [37m`TABLE_SCHEMA`[0m [37m=[0m [37m'omprakash'[0m
+                    [94mAND[0m
+                    [37m`TABLE_NAME`[0m [37m=[0m [37m'permissions'[0m
+            [37m)[0m [37m`s`[0m
+            [94mLEFT JOIN[0m [37m([0m
+                [94mSELECT[0m
+                    [37m*[0m
+                [94mFROM[0m [37m`INFORMATION_SCHEMA`[0m[37m.[0m[37m`REFERENTIAL_CONSTRAINTS`[0m
+                [94mWHERE[0m
+                    [37m`CONSTRAINT_SCHEMA`[0m [37m=[0m [37m'omprakash'[0m
+                    [94mAND[0m
+                    [37m`TABLE_NAME`[0m [37m=[0m [37m'permissions'[0m
+            [37m)[0m [37m`rc`[0m
+                [94mON[0m
+                    [37m`s`[0m[37m.[0m[37m`INDEX_NAME`[0m [37m=[0m [37m`rc`[0m[37m.[0m[37m`CONSTRAINT_NAME`[0m
+                    [94mAND[0m
+                    [37m`s`[0m[37m.[0m[37m`TABLE_SCHEMA`[0m [37m=[0m [37m`rc`[0m[37m.[0m[37m`CONSTRAINT_SCHEMA`[0m
+            [94mWHERE[0m
+                [37m`s`[0m[37m.[0m[37m`INDEX_NAME`[0m [37m!=[0m [37m'PRIMARY'[0m
+                [94mAND[0m
+                [37m`rc`[0m[37m.[0m[37m`CONSTRAINT_NAME`[0m [94mIS NULL[0m
+            
+[90m[4mquery:[24m[39m 
+            [94mSELECT[0m
+                [37m`kcu`[0m[37m.[0m[37m`TABLE_SCHEMA`[0m[37m,[0m
+                [37m`kcu`[0m[37m.[0m[37m`TABLE_NAME`[0m[37m,[0m
+                [37m`kcu`[0m[37m.[0m[37m`CONSTRAINT_NAME`[0m[37m,[0m
+                [37m`kcu`[0m[37m.[0m[37m`COLUMN_NAME`[0m[37m,[0m
+                [37m`kcu`[0m[37m.[0m[37m`REFERENCED_TABLE_SCHEMA`[0m[37m,[0m
+                [37m`kcu`[0m[37m.[0m[37m`REFERENCED_TABLE_NAME`[0m[37m,[0m
+                [37m`kcu`[0m[37m.[0m[37m`REFERENCED_COLUMN_NAME`[0m[37m,[0m
+                [37m`rc`[0m[37m.[0m[37m`DELETE_RULE`[0m [37m`ON_DELETE`[0m[37m,[0m
+                [37m`rc`[0m[37m.[0m[37m`UPDATE_RULE`[0m [37m`ON_UPDATE`[0m
+            [94mFROM[0m [37m([0m
+                [94mSELECT[0m
+                    [37m*[0m
+                [94mFROM[0m [37m`INFORMATION_SCHEMA`[0m[37m.[0m[37m`KEY_COLUMN_USAGE`[0m [37m`kcu`[0m
+                [94mWHERE[0m
+                    [37m`kcu`[0m[37m.[0m[37m`TABLE_SCHEMA`[0m [37m=[0m [37m'omprakash'[0m
+                    [94mAND[0m
+                    [37m`kcu`[0m[37m.[0m[37m`TABLE_NAME`[0m [37m=[0m [37m'permissions'[0m
+            [37m)[0m [37m`kcu`[0m
+            [94mINNER JOIN[0m [37m([0m
+                [94mSELECT[0m
+                    [37m*[0m
+                [94mFROM[0m [37m`INFORMATION_SCHEMA`[0m[37m.[0m[37m`REFERENTIAL_CONSTRAINTS`[0m
+                [94mWHERE[0m
+                    [37m`CONSTRAINT_SCHEMA`[0m [37m=[0m [37m'omprakash'[0m
+                    [94mAND[0m
+                    [37m`TABLE_NAME`[0m [37m=[0m [37m'permissions'[0m
+            [37m)[0m [37m`rc`[0m
+                [94mON[0m
+                    [37m`rc`[0m[37m.[0m[37m`CONSTRAINT_SCHEMA`[0m [37m=[0m [37m`kcu`[0m[37m.[0m[37m`CONSTRAINT_SCHEMA`[0m
+                    [94mAND[0m
+                    [37m`rc`[0m[37m.[0m[37m`TABLE_NAME`[0m [37m=[0m [37m`kcu`[0m[37m.[0m[37m`TABLE_NAME`[0m
+                    [94mAND[0m
+                    [37m`rc`[0m[37m.[0m[37m`CONSTRAINT_NAME`[0m [37m=[0m [37m`kcu`[0m[37m.[0m[37m`CONSTRAINT_NAME`[0m
+            
+[90m[4mquery:[24m[39m [94mALTER TABLE[0m [37m`permissions`[0m [94mADD CONSTRAINT[0m [37m`FK_f10931e7bb05a3b434642ed2797`[0m [94mFOREIGN KEY[0m [37m([0m[37m`role_id`[0m[37m)[0m [94mREFERENCES[0m [37m`roles`[0m[37m([0m[37m`id`[0m[37m)[0m [94mON[0m [94mDELETE[0m [94mCASCADE[0m
+[4m[31mquery failed:[39m[24m [94mALTER TABLE[0m [37m`permissions`[0m [94mADD CONSTRAINT[0m [37m`FK_f10931e7bb05a3b434642ed2797`[0m [94mFOREIGN KEY[0m [37m([0m[37m`role_id`[0m[37m)[0m [94mREFERENCES[0m [37m`roles`[0m[37m([0m[37m`id`[0m[37m)[0m [94mON[0m [94mDELETE[0m [94mCASCADE[0m
+[4m[31merror:[39m[24m Error: Duplicate foreign key constraint name 'FK_f10931e7bb05a3b434642ed2797'
+[4mMigration "RBACSetup1771053853039" failed, error: Duplicate foreign key constraint name 'FK_f10931e7bb05a3b434642ed2797'[24m
+[90m[4mquery:[24m[39m [37mROLLBACK[0m
+[30m[41mError during migration run:[49m[39m
+QueryFailedError: Duplicate foreign key constraint name 'FK_f10931e7bb05a3b434642ed2797'
+    at Query.onResult (D:\Omprakash\node_backend\node_modules\typeorm\src\driver\mysql\MysqlQueryRunner.ts:248:33)
+    at Query.execute (D:\Omprakash\node_backend\node_modules\mysql2\lib\commands\command.js:36:14)
+    at PoolConnection.handlePacket (D:\Omprakash\node_backend\node_modules\mysql2\lib\base\connection.js:508:34)
+    at PacketParser.onPacket (D:\Omprakash\node_backend\node_modules\mysql2\lib\base\connection.js:93:12)
+    at PacketParser.executeStart (D:\Omprakash\node_backend\node_modules\mysql2\lib\packet_parser.js:75:16)
+    at Socket.<anonymous> (D:\Omprakash\node_backend\node_modules\mysql2\lib\base\connection.js:100:25)
+    at Socket.emit (node:events:519:28)
+    at Socket.emit (node:domain:489:12)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3) {
+  query: 'ALTER TABLE `permissions` ADD CONSTRAINT `FK_f10931e7bb05a3b434642ed2797` FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`) ON DELETE CASCADE',
+  parameters: undefined,
+  driverError: Error: Duplicate foreign key constraint name 'FK_f10931e7bb05a3b434642ed2797'
+      at Packet.asError (D:\Omprakash\node_backend\node_modules\mysql2\lib\packets\packet.js:739:17)
+      at Query.execute (D:\Omprakash\node_backend\node_modules\mysql2\lib\commands\command.js:29:26)
+      at PoolConnection.handlePacket (D:\Omprakash\node_backend\node_modules\mysql2\lib\base\connection.js:508:34)
+      at PacketParser.onPacket (D:\Omprakash\node_backend\node_modules\mysql2\lib\base\connection.js:93:12)
+      at PacketParser.executeStart (D:\Omprakash\node_backend\node_modules\mysql2\lib\packet_parser.js:75:16)
+      at Socket.<anonymous> (D:\Omprakash\node_backend\node_modules\mysql2\lib\base\connection.js:100:25)
+      at Socket.emit (node:events:519:28)
+      at Socket.emit (node:domain:489:12)
+      at addChunk (node:internal/streams/readable:561:12)
+      at readableAddChunkPushByteMode (node:internal/streams/readable:512:3) {
+    code: 'ER_FK_DUP_NAME',
+    errno: 1826,
+    sqlState: 'HY000',
+    sqlMessage: "Duplicate foreign key constraint name 'FK_f10931e7bb05a3b434642ed2797'",
+    sql: 'ALTER TABLE `permissions` ADD CONSTRAINT `FK_f10931e7bb05a3b434642ed2797` FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`) ON DELETE CASCADE'
+  },
+  code: 'ER_FK_DUP_NAME',
+  errno: 1826,
+  sqlState: 'HY000',
+  sqlMessage: "Duplicate foreign key constraint name 'FK_f10931e7bb05a3b434642ed2797'",
+  sql: 'ALTER TABLE `permissions` ADD CONSTRAINT `FK_f10931e7bb05a3b434642ed2797` FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`) ON DELETE CASCADE'
+}
