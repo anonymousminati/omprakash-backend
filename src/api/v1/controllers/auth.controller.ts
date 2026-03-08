@@ -35,7 +35,14 @@ export class AuthController {
             const token = jwt.sign(
                 { id: user.id, email: user.email, role: user.role },
                 JWT_SECRET,
-                { expiresIn: '24h' }
+                { expiresIn: '24h' } // Short lived access token
+            );
+
+            const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || JWT_SECRET;
+            const refreshToken = jwt.sign(
+                { id: user.id },
+                JWT_REFRESH_SECRET,
+                { expiresIn: '7d' } // Long lived refresh token
             );
 
             const userWithRole = await this.userRepository.findOne({
@@ -77,6 +84,7 @@ export class AuthController {
             return res.status(200).json({
                 success: true,
                 token,
+                refreshToken,
                 user: {
                     ...userWithoutPassword,
                     meta // Attach meta to user object
@@ -84,6 +92,50 @@ export class AuthController {
             });
         } catch (error) {
             console.error('Login error:', error);
+            return res.status(500).json({ success: false, message: 'Internal server error' });
+        }
+    }
+
+    refreshToken = async (req: Request, res: Response) => {
+        try {
+            const { refreshToken } = req.body;
+            if (!refreshToken) {
+                return res.status(401).json({ success: false, message: 'Refresh token required' });
+            }
+
+            const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || JWT_SECRET;
+
+            try {
+                const decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET) as { id: string };
+
+                const user = await this.userRepository.findOne({ where: { id: decoded.id } });
+                if (!user || !user.is_active) {
+                    return res.status(401).json({ success: false, message: 'Invalid token or inactive user' });
+                }
+
+                // Issue new tokens
+                const newToken = jwt.sign(
+                    { id: user.id, email: user.email, role: user.role },
+                    JWT_SECRET,
+                    { expiresIn: '24h' }
+                );
+
+                const newRefreshToken = jwt.sign(
+                    { id: user.id },
+                    JWT_REFRESH_SECRET,
+                    { expiresIn: '7d' }
+                );
+
+                return res.status(200).json({
+                    success: true,
+                    token: newToken,
+                    refreshToken: newRefreshToken
+                });
+            } catch (err) {
+                return res.status(403).json({ success: false, message: 'Invalid or expired refresh token' });
+            }
+        } catch (error) {
+            console.error('Refresh token error:', error);
             return res.status(500).json({ success: false, message: 'Internal server error' });
         }
     }
