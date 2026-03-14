@@ -5,7 +5,8 @@ import { authenticate, authorize } from '../../../middleware/auth';
 const router = Router();
 const controller = new InnovationController();
 
-router.post('/', authenticate, authorize('innovations', 'create'), controller.create);
+// Public route — anyone can submit an innovation from the website
+router.post('/', controller.create);
 router.get('/', controller.list);
 router.get('/:id', controller.get);
 router.put('/:id', authenticate, authorize('innovations', 'update'), controller.update);
