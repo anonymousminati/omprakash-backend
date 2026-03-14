@@ -22,11 +22,13 @@ export class RBACSetup1771053853039 implements MigrationInterface {
                 { name: "id", type: "varchar", length: "36", isPrimary: true },
                 { name: "created_at", type: "timestamp", default: "CURRENT_TIMESTAMP" },
                 { name: "updated_at", type: "timestamp", default: "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" },
+                { name: "created_by", type: "varchar", length: "36", isNullable: true }, // Add this
+                { name: "updated_by", type: "varchar", length: "36", isNullable: true }, // Add this
                 { name: "key", type: "varchar", isUnique: true },
                 { name: "name", type: "varchar" }
             ]
         }), true);
-
+        
         // 3. Create Permissions Table
         await queryRunner.createTable(new Table({
             name: "permissions",
