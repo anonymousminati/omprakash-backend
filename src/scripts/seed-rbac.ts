@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { AppDataSource } from "../config/database";
 import { Module } from "../models/Module";
 import { Role } from "../models/Role";
@@ -61,11 +63,14 @@ const seedRBAC = async () => {
         }
 
         // 3. Ensure Superadmin User has the Role (Fixing any missed migrations)
-        const superadminUser = await userRepo.findOneBy({ email: 'superadmin@omprakash.com' });
-        if (superadminUser && !superadminUser.role_relation) {
-            superadminUser.role_relation = superadminRole;
-            await userRepo.save(superadminUser);
-            console.log("Linked Superadmin User to Superadmin Role");
+        const superadminEmail = process.env.SUPERADMIN_EMAIL;
+        if (superadminEmail) {
+            const superadminUser = await userRepo.findOneBy({ email: superadminEmail });
+            if (superadminUser && !superadminUser.role_id) {
+                superadminUser.role_relation = superadminRole;
+                await userRepo.save(superadminUser);
+                console.log("Linked Superadmin User to Superadmin Role");
+            }
         }
 
         console.log("RBAC Seeding Complete");
