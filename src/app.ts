@@ -33,7 +33,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(helmet());
-app.use(cors()); // Allow all origins for dev
+app.use(cors({
+  origin: [
+    'https://omprakashkhursade.in',
+    'https://dash.omprakashkhursade.in'
+  ],
+  credentials: true
+}));
 
 // Apply rate limiting to all requests
 const limiter = rateLimit({
@@ -76,8 +82,12 @@ const socketService = SocketService.getInstance();
 
 // Initialize Socket.io with the same CORS options as Express
 socketService.initialize(httpServer, {
-  origin: "*", // Adjust as needed for production
-  methods: ["GET", "POST"]
+  origin: [
+    'https://omprakashkhursade.in',
+    'https://dash.omprakashkhursade.in'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST']
 });
 
 AppDataSource.initialize()
