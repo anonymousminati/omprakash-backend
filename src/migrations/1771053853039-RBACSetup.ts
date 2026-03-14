@@ -7,9 +7,9 @@ export class RBACSetup1771053853039 implements MigrationInterface {
         await queryRunner.createTable(new Table({
             name: "roles",
             columns: [
-                { name: "id", type: "uuid", isPrimary: true, generationStrategy: "uuid", default: "uuid_generate_v4()" },
-                { name: "created_at", type: "timestamp", default: "now()" },
-                { name: "updated_at", type: "timestamp", default: "now()" },
+                { name: "id", type: "varchar", length: "36", isPrimary: true },
+                { name: "created_at", type: "timestamp", default: "CURRENT_TIMESTAMP" },
+                { name: "updated_at", type: "timestamp", default: "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" },
                 { name: "name", type: "varchar", isUnique: true },
                 { name: "description", type: "text", isNullable: true }
             ]
@@ -19,9 +19,9 @@ export class RBACSetup1771053853039 implements MigrationInterface {
         await queryRunner.createTable(new Table({
             name: "modules",
             columns: [
-                { name: "id", type: "uuid", isPrimary: true, generationStrategy: "uuid", default: "uuid_generate_v4()" },
-                { name: "created_at", type: "timestamp", default: "now()" },
-                { name: "updated_at", type: "timestamp", default: "now()" },
+                { name: "id", type: "varchar", length: "36", isPrimary: true },
+                { name: "created_at", type: "timestamp", default: "CURRENT_TIMESTAMP" },
+                { name: "updated_at", type: "timestamp", default: "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" },
                 { name: "key", type: "varchar", isUnique: true },
                 { name: "name", type: "varchar" }
             ]
@@ -31,15 +31,15 @@ export class RBACSetup1771053853039 implements MigrationInterface {
         await queryRunner.createTable(new Table({
             name: "permissions",
             columns: [
-                { name: "id", type: "uuid", isPrimary: true, generationStrategy: "uuid", default: "uuid_generate_v4()" },
-                { name: "created_at", type: "timestamp", default: "now()" },
-                { name: "updated_at", type: "timestamp", default: "now()" },
-                { name: "role_id", type: "uuid" },
-                { name: "module_id", type: "uuid" },
-                { name: "can_create", type: "boolean", default: false },
-                { name: "can_read", type: "boolean", default: false },
-                { name: "can_update", type: "boolean", default: false },
-                { name: "can_delete", type: "boolean", default: false }
+                { name: "id", type: "varchar", length: "36", isPrimary: true },
+                { name: "created_at", type: "timestamp", default: "CURRENT_TIMESTAMP" },
+                { name: "updated_at", type: "timestamp", default: "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" },
+                { name: "role_id", type: "varchar", length: "36" },
+                { name: "module_id", type: "varchar", length: "36" },
+                { name: "can_create", type: "tinyint", default: 0 },
+                { name: "can_read", type: "tinyint", default: 0 },
+                { name: "can_update", type: "tinyint", default: 0 },
+                { name: "can_delete", type: "tinyint", default: 0 }
             ]
         }), true);
 
@@ -60,7 +60,8 @@ export class RBACSetup1771053853039 implements MigrationInterface {
         // 4. Update Users Table
         await queryRunner.addColumn("users", new TableColumn({
             name: "role_id",
-            type: "uuid",
+            type: "varchar",
+            length: "36",
             isNullable: true
         }));
 
@@ -71,11 +72,10 @@ export class RBACSetup1771053853039 implements MigrationInterface {
             onDelete: "SET NULL"
         }));
 
-        // 5. Data Migration (Best effort)
-        // Insert default roles
-        await queryRunner.query(`INSERT INTO roles (id, name, description) VALUES (uuid_generate_v4(), 'Superadmin', 'Full Access'), (uuid_generate_v4(), 'Citizen', 'Default User')`);
+        // 5. Data Migration (MySQL Syntax)
+        // Note: Using (UUID()) function for MySQL 8.0+
+        await queryRunner.query(`INSERT INTO roles (id, name, description) VALUES (UUID(), 'Superadmin', 'Full Access'), (UUID(), 'Citizen', 'Default User')`);
 
-        // Migrate users based on string role
         await queryRunner.query(`
             UPDATE users SET role_id = (SELECT id FROM roles WHERE name = 'Superadmin') WHERE role = 'superadmin';
         `);
@@ -87,11 +87,12 @@ export class RBACSetup1771053853039 implements MigrationInterface {
     public async down(queryRunner: QueryRunner): Promise<void> {
         const usersTable = await queryRunner.getTable("users");
         const foreignKey = usersTable!.foreignKeys.find(fk => fk.columnNames.indexOf("role_id") !== -1);
-        await queryRunner.dropForeignKey("users", foreignKey!);
+        if (foreignKey) {
+            await queryRunner.dropForeignKey("users", foreignKey);
+        }
         await queryRunner.dropColumn("users", "role_id");
         await queryRunner.dropTable("permissions");
         await queryRunner.dropTable("modules");
         await queryRunner.dropTable("roles");
     }
-
 }

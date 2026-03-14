@@ -8,17 +8,22 @@ import {
 
 export abstract class Base extends TypeORMBaseEntity {
     @PrimaryGeneratedColumn('uuid')
+    @Column({ type: 'varchar', length: 36, primary: true }) // Explicit MySQL mapping
     id: string;
 
-    @CreateDateColumn()
+    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     created_at: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({ 
+        type: 'timestamp', 
+        default: () => 'CURRENT_TIMESTAMP', 
+        onUpdate: 'CURRENT_TIMESTAMP' 
+    })
     updated_at: Date;
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', length: 36, nullable: true })
     created_by: string; // User ID
 
-    @Column({ nullable: true })
+    @Column({ type: 'varchar', length: 36, nullable: true })
     updated_by: string; // User ID
 }

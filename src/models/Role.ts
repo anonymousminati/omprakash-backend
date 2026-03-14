@@ -5,10 +5,10 @@ import { Permission } from './Permission';
 
 @Entity('roles')
 export class Role extends Base {
-    @Column({ unique: true })
+    @Column({ type: 'varchar', length: 100, unique: true })
     name: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'text', nullable: true })
     description: string;
 
     @OneToMany(() => User, (user) => user.role_relation)
