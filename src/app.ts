@@ -1,6 +1,6 @@
 // Import Winston for logging
 import winston from 'winston';
-
+import 'dotenv/config';
 // Configure Winston logger
 const logger = winston.createLogger({
   level: 'info',
