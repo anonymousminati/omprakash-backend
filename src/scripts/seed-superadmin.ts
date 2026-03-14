@@ -1,4 +1,5 @@
-import '../config/env'; // load dotenv before anything else
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { SUPERADMIN_EMAIL, SUPERADMIN_PASSWORD } from '../config/env';
 import { AppDataSource } from '../config/database';
 import { User } from '../models/User';
