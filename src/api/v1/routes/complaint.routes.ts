@@ -6,12 +6,12 @@ import { authenticate, authorize } from '../../../middleware/auth';
 const router = Router();
 const controller = new ComplaintController();
 
-// Public route for submitting complaints
+// Public routes — no auth required
 router.post('/', uploadMiddleware.single('photo'), controller.create);
+router.get('/:id', controller.get);   // citizens track their own complaint by ID
 
-// Protected routes for backpanel
+// Protected routes — backpanel only
 router.get('/', authenticate, authorize('complaints', 'read'), controller.list);
-router.get('/:id', authenticate, authorize('complaints', 'read'), controller.get);
 router.put('/:id', authenticate, authorize('complaints', 'update'), uploadMiddleware.single('photo'), controller.update);
 router.delete('/:id', authenticate, authorize('complaints', 'delete'), controller.delete);
 

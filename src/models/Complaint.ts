@@ -34,6 +34,15 @@ export class Complaint extends Base {
     @Column({ nullable: true })
     photo_url: string;
 
+    @Column({ type: 'double', nullable: true })
+    geo_latitude: number;
+
+    @Column({ type: 'double', nullable: true })
+    geo_longitude: number;
+
+    @Column({ type: 'float', nullable: true })
+    geo_accuracy: number;
+
     @Column({
         type: "enum",
         enum: ComplaintStatus,
