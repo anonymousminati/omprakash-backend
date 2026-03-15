@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { DeepPartial } from 'typeorm';
 import { AppDataSource } from '../../../config/database';
 import { Complaint, ComplaintStatus } from '../../../models/Complaint';
 import { uploadImage, getFullCdnUrl, deleteImage } from '../../../services/bunnyService';
@@ -9,16 +10,30 @@ export class ComplaintController {
     // Create a new complaint
     create = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { full_name, phone_number, email_address, location, category, subject, description } = req.body;
+            const { full_name, phone_number, email_address, location, category, subject, description, geolocation } = req.body;
             let photo_url = req.body.photo_url || null;
 
             if (req.file) {
-                // Determine category for folder structure in Bunny.net. Let's assume complaints flow uses 'complaints'
                 const uploadedPath = await uploadImage(req.file.buffer, 'complaints');
                 photo_url = getFullCdnUrl(uploadedPath);
             }
 
-            const complaint = this.complaintRepository.create({
+            // Parse GPS coords sent as JSON string from the website form
+            let geo_latitude: number | null = null;
+            let geo_longitude: number | null = null;
+            let geo_accuracy: number | null = null;
+            if (geolocation) {
+                try {
+                    const geo = typeof geolocation === 'string' ? JSON.parse(geolocation) : geolocation;
+                    geo_latitude  = typeof geo.latitude  === 'number' ? geo.latitude  : null;
+                    geo_longitude = typeof geo.longitude === 'number' ? geo.longitude : null;
+                    geo_accuracy  = typeof geo.accuracy  === 'number' ? geo.accuracy  : null;
+                } catch {
+                    // malformed geolocation — ignore, store nulls
+                }
+            }
+
+            const payload: DeepPartial<Complaint> = {
                 full_name,
                 phone_number,
                 email_address,
@@ -27,8 +42,13 @@ export class ComplaintController {
                 subject,
                 description,
                 photo_url,
-                status: ComplaintStatus.OPEN
-            });
+                status: ComplaintStatus.OPEN,
+            };
+            if (geo_latitude  !== null) payload.geo_latitude  = geo_latitude;
+            if (geo_longitude !== null) payload.geo_longitude = geo_longitude;
+            if (geo_accuracy  !== null) payload.geo_accuracy  = geo_accuracy;
+
+            const complaint = this.complaintRepository.create(payload);
 
             await this.complaintRepository.save(complaint);
             res.status(201).json({ success: true, data: complaint });

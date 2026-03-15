@@ -161,6 +161,9 @@ export class MasterSchema1773100000000 implements MigrationInterface {
                     \`subject\`       varchar(255) NOT NULL,
                     \`description\`   text         NOT NULL,
                     \`photo_url\`     varchar(255) NULL,
+                    \`geo_latitude\`  double       NULL,
+                    \`geo_longitude\` double       NULL,
+                    \`geo_accuracy\`  float        NULL,
                     \`status\`        enum('OPEN','IN_PROGRESS','RESOLVED','REJECTED') NOT NULL DEFAULT 'OPEN',
                     PRIMARY KEY (\`id\`)
                 ) ENGINE=InnoDB
@@ -175,6 +178,9 @@ export class MasterSchema1773100000000 implements MigrationInterface {
             await this.addCol(queryRunner, "complaints", "subject",       "varchar(255) NOT NULL DEFAULT ''");
             await this.addCol(queryRunner, "complaints", "photo_url",     "varchar(255) NULL");
             await this.addCol(queryRunner, "complaints", "description",   "text NOT NULL DEFAULT ''");
+            await this.addCol(queryRunner, "complaints", "geo_latitude",  "double NULL");
+            await this.addCol(queryRunner, "complaints", "geo_longitude", "double NULL");
+            await this.addCol(queryRunner, "complaints", "geo_accuracy",  "float NULL");
 
             // Fix status to enum (idempotent — MySQL accepts MODIFY even if type matches)
             await queryRunner.query(`
