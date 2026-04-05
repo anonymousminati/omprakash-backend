@@ -292,6 +292,32 @@ export class MasterSchema1773100000000 implements MigrationInterface {
                 ) ENGINE=InnoDB
             `);
         }
+
+        // 13. posts ────────────────────────────────────────────────────────────
+        if (!await queryRunner.hasTable("posts")) {
+            await queryRunner.query(`
+                CREATE TABLE \`posts\` (
+                    ${this.baseColumns},
+                    \`title\`           varchar(255)  NOT NULL,
+                    \`slug\`            varchar(255)  NOT NULL,
+                    \`description\`     varchar(500)  NULL,
+                    \`content\`         longtext      NULL,
+                    \`author\`          varchar(255)  NOT NULL DEFAULT 'Secretariat Office',
+                    \`category\`        varchar(100)  NULL,
+                    \`is_published\`    tinyint(1)    NOT NULL DEFAULT 0,
+                    \`is_official\`     tinyint(1)    NOT NULL DEFAULT 0,
+                    \`hero_image_url\`  varchar(1000) NULL,
+                    \`images\`          longtext      NULL,
+                    \`published_at\`    datetime      NULL,
+                    PRIMARY KEY (\`id\`),
+                    UNIQUE KEY \`UQ_posts_slug\` (\`slug\`)
+                ) ENGINE=InnoDB
+            `);
+        } else {
+            await this.addCol(queryRunner, "posts", "is_official",    "tinyint(1) NOT NULL DEFAULT 0");
+            await this.addCol(queryRunner, "posts", "published_at",   "datetime NULL");
+            await this.addCol(queryRunner, "posts", "hero_image_url", "varchar(1000) NULL");
+        }
     }
 
     // ── down (best-effort rollback for fresh DB only) ─────────────────────────
@@ -317,6 +343,7 @@ export class MasterSchema1773100000000 implements MigrationInterface {
         await drop("contacts");
         await drop("complaints");
         await drop("innovations");
+        await drop("posts");
         await drop("permissions");
         await drop("modules");
 

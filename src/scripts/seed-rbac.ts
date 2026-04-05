@@ -25,6 +25,7 @@ const seedRBAC = async () => {
             { key: 'roles', name: 'Roles & Permissions' },
             { key: 'gallery_images', name: 'Gallery Images' },
             { key: 'gallery_categories', name: 'Gallery Categories' },
+            { key: 'posts', name: 'Blog & Posts' },
         ];
 
         for (const m of modulesData) {

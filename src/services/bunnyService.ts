@@ -31,7 +31,7 @@ const storageZone = BunnyStorageSDK.zone.connect_with_accesskey(
  * @param category The storage category (e.g., 'complaints', 'gallery', 'profile').
  * @returns The unique relative path / CDN path of the uploaded image.
  */
-export async function uploadImage(fileBuffer: Buffer, category: 'complaints' | 'gallery' | 'profile'): Promise<string> {
+export async function uploadImage(fileBuffer: Buffer, category: 'complaints' | 'gallery' | 'profile' | 'posts'): Promise<string> {
     const fileName = `${uuidv4()}.webp`;
     const uploadPath = `${category}/${fileName}`;
 
