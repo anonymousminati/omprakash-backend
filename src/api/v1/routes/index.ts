@@ -7,6 +7,7 @@ import rbacRouter from './rbac.routes';
 import complaintRouter from './complaint.routes';
 import contactRouter from './contact.routes';
 import galleryRouter from './gallery.routes';
+import postRouter from './post.routes';
 
 router.use('/innovations', innovationRouter);
 router.use('/auth', authRouter);
@@ -15,5 +16,6 @@ router.use('/complaints', complaintRouter);
 router.use('/contacts', contactRouter);
 router.use('/rbac', rbacRouter);
 router.use('/gallery', galleryRouter);
+router.use('/posts', postRouter);
 
 export default router;
