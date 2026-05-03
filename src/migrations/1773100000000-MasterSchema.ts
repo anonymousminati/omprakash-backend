@@ -60,6 +60,7 @@ export class MasterSchema1773100000000 implements MigrationInterface {
                     \`password_hash\` varchar(255) NOT NULL,
                     \`role\`          varchar(255) NOT NULL DEFAULT 'citizen',
                     \`role_id\`       varchar(36)  NULL,
+                    \`assigned_wards\` text         NULL,
                     \`is_active\`     tinyint      NOT NULL DEFAULT 1,
                     PRIMARY KEY (\`id\`),
                     UNIQUE KEY \`UQ_users_email\` (\`email\`)
@@ -68,6 +69,7 @@ export class MasterSchema1773100000000 implements MigrationInterface {
         } else {
             // Ensure role_id exists (added by old RBACSetup migration)
             await this.addCol(queryRunner, "users", "role_id", "varchar(36) NULL");
+            await this.addCol(queryRunner, "users", "assigned_wards", "text NULL");
         }
 
         // 2. roles ─────────────────────────────────────────────────────────────
@@ -157,6 +159,7 @@ export class MasterSchema1773100000000 implements MigrationInterface {
                     \`phone_number\`  varchar(255) NOT NULL,
                     \`email_address\` varchar(255) NULL,
                     \`location\`      varchar(255) NOT NULL,
+                    \`ward\`          varchar(50)  NULL,
                     \`category\`      varchar(255) NOT NULL,
                     \`subject\`       varchar(255) NOT NULL,
                     \`description\`   text         NOT NULL,
@@ -174,6 +177,7 @@ export class MasterSchema1773100000000 implements MigrationInterface {
             await this.addCol(queryRunner, "complaints", "phone_number",  "varchar(255) NOT NULL DEFAULT ''");
             await this.addCol(queryRunner, "complaints", "email_address", "varchar(255) NULL");
             await this.addCol(queryRunner, "complaints", "location",      "varchar(255) NOT NULL DEFAULT ''");
+            await this.addCol(queryRunner, "complaints", "ward",          "varchar(50) NULL");
             await this.addCol(queryRunner, "complaints", "category",      "varchar(255) NOT NULL DEFAULT ''");
             await this.addCol(queryRunner, "complaints", "subject",       "varchar(255) NOT NULL DEFAULT ''");
             await this.addCol(queryRunner, "complaints", "photo_url",     "varchar(255) NULL");

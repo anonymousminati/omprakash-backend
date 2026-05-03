@@ -9,7 +9,7 @@ export class UserController {
 
     create = async (req: Request, res: Response) => {
         try {
-            const { name, email, password, role } = req.body;
+            const { name, email, password, role, assigned_wards } = req.body;
 
             const existingUser = await this.userRepository.findOne({ where: { email } });
             if (existingUser) {
@@ -35,8 +35,9 @@ export class UserController {
                 name,
                 email,
                 password_hash,
-                role: assignedRole.name.toLowerCase(), // Maintain backward compat
+                role: assignedRole.name.toLowerCase(),
                 role_relation: assignedRole,
+                assigned_wards: this.normalizeWards(assigned_wards),
                 is_active: true
             });
 
@@ -99,7 +100,7 @@ export class UserController {
     update = async (req: Request, res: Response) => {
         try {
             const { id } = req.params;
-            const { name, email, password, role } = req.body;
+            const { name, email, password, role, assigned_wards } = req.body;
 
             const user = await this.userRepository.findOne({ where: { id } });
 
@@ -125,6 +126,10 @@ export class UserController {
                 }
             }
 
+            if (assigned_wards !== undefined) {
+                user.assigned_wards = this.normalizeWards(assigned_wards);
+            }
+
             await this.userRepository.save(user);
 
             const { password_hash: _, ...userWithoutPassword } = user;
@@ -133,5 +138,22 @@ export class UserController {
             console.error('Update user error:', error);
             return res.status(500).json({ success: false, message: 'Internal server error' });
         }
+    }
+
+    /**
+     * Normalize ward input:
+     * - `["ALL"]` or `"ALL"` → `["ALL"]`
+     * - `["Ward 1", "Ward 5"]` → kept as-is
+     * - `[]`, `null`, `undefined` → `null`
+     */
+    private normalizeWards(input: any): string[] | null {
+        if (!input) return null;
+        if (typeof input === 'string') {
+            if (input.toUpperCase() === 'ALL') return ['ALL'];
+            try { input = JSON.parse(input); } catch { return [input]; }
+        }
+        if (!Array.isArray(input) || input.length === 0) return null;
+        if (input.some((w: string) => typeof w === 'string' && w.toUpperCase() === 'ALL')) return ['ALL'];
+        return input.filter((w: string) => typeof w === 'string' && w.trim());
     }
 }
