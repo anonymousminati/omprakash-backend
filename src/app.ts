@@ -36,6 +36,7 @@ app.use(helmet());
 app.use(cors({
   origin: [
     'http://localhost:3000',
+    "https://981a-2409-40c2-3106-1fc-dda2-9096-b44c-c51d.ngrok-free.app/",
     'http://localhost:5173',
     'http://localhost:5500',
     'https://omprakashkhursade.in',
@@ -87,6 +88,7 @@ const socketService = SocketService.getInstance();
 socketService.initialize(httpServer, {
   origin: [
     'http://localhost:3000',
+    "https://981a-2409-40c2-3106-1fc-dda2-9096-b44c-c51d.ngrok-free.app/",
     'http://localhost:5173',
     'http://localhost:5500',
     'https://omprakashkhursade.in',

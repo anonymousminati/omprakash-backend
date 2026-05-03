@@ -22,6 +22,9 @@ export class Complaint extends Base {
     @Column()
     location: string;
 
+    @Column({ nullable: true })
+    ward: string;
+
     @Column()
     category: string;
 

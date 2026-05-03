@@ -23,6 +23,15 @@ export class User extends Base {
     @JoinColumn({ name: 'role_id' })
     role_relation: Role;
 
+    /**
+     * Ward access list.
+     * - `["ALL"]`                → user can see/manage complaints from all wards
+     * - `["Ward 1", "Ward 5"]`   → user can only see/manage complaints in these wards
+     * - `[]` or null              → no ward-specific access (e.g. citizens)
+     */
+    @Column({ type: 'simple-json', nullable: true })
+    assigned_wards: string[] | null;
+
     @Column({ default: true })
     is_active: boolean;
 }

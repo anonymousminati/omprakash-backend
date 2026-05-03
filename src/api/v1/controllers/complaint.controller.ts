@@ -10,7 +10,7 @@ export class ComplaintController {
     // Create a new complaint
     create = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { full_name, phone_number, email_address, location, category, subject, description, geolocation } = req.body;
+            const { full_name, phone_number, email_address, location, ward, category, subject, description, geolocation } = req.body;
             let photo_url = req.body.photo_url || null;
 
             if (req.file) {
@@ -38,6 +38,7 @@ export class ComplaintController {
                 phone_number,
                 email_address,
                 location,
+                ward: ward || null,
                 category,
                 subject,
                 description,
@@ -60,12 +61,25 @@ export class ComplaintController {
     // List complaints
     list = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { page = 1, limit = 10, status, category } = req.query;
+            const { page = 1, limit = 10, status, category, ward, dateFrom, dateTo } = req.query;
             const skip = (Number(page) - 1) * Number(limit);
 
             const where: any = {};
             if (status) where.status = status;
             if (category) where.category = category;
+            if (ward) where.ward = ward;
+
+            // Date range filtering on created_at
+            if (dateFrom || dateTo) {
+                const { Between, MoreThanOrEqual, LessThanOrEqual } = require('typeorm');
+                if (dateFrom && dateTo) {
+                    where.created_at = Between(new Date(dateFrom as string), new Date(dateTo + 'T23:59:59'));
+                } else if (dateFrom) {
+                    where.created_at = MoreThanOrEqual(new Date(dateFrom as string));
+                } else if (dateTo) {
+                    where.created_at = LessThanOrEqual(new Date(dateTo + 'T23:59:59'));
+                }
+            }
 
             const [complaints, total] = await this.complaintRepository.findAndCount({
                 where: where,
@@ -109,7 +123,7 @@ export class ComplaintController {
     update = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { id } = req.params;
-            const { full_name, phone_number, email_address, location, category, subject, description, status } = req.body;
+            const { full_name, phone_number, email_address, location, ward, category, subject, description, status } = req.body;
 
             const complaint = await this.complaintRepository.findOneBy({ id });
             if (!complaint) {
@@ -141,6 +155,7 @@ export class ComplaintController {
             if (phone_number) complaint.phone_number = phone_number;
             if (email_address) complaint.email_address = email_address;
             if (location) complaint.location = location;
+            if (ward !== undefined) complaint.ward = ward || null;
             if (category) complaint.category = category;
             if (subject) complaint.subject = subject;
             if (description) complaint.description = description;
