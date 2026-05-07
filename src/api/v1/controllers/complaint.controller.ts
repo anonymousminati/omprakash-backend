@@ -3,6 +3,7 @@ import { DeepPartial } from 'typeorm';
 import { AppDataSource } from '../../../config/database';
 import { Complaint, ComplaintStatus } from '../../../models/Complaint';
 import { uploadImage, getFullCdnUrl, deleteImage } from '../../../services/bunnyService';
+import { emailService } from '../../../services/email.service';
 
 export class ComplaintController {
     private complaintRepository = AppDataSource.getRepository(Complaint);
@@ -52,6 +53,77 @@ export class ComplaintController {
             const complaint = this.complaintRepository.create(payload);
 
             await this.complaintRepository.save(complaint);
+
+            // Send email to Citizen
+            if (complaint.email_address) {
+                try {
+                    const citizenHtml = `
+                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+                            <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-bottom: 1px solid #e0e0e0;">
+                                <h2 style="margin: 0; color: #333;">Complaint Registered Successfully</h2>
+                            </div>
+                            <div style="padding: 20px; color: #555; line-height: 1.6;">
+                                <p>Dear <strong>${complaint.full_name}</strong>,</p>
+                                <p>Thank you for reaching out. Your complaint has been registered successfully. Our team will look into it shortly.</p>
+                                <div style="background-color: #f1f5f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                                    <p style="margin: 5px 0;"><strong>Subject:</strong> ${complaint.subject}</p>
+                                    <p style="margin: 5px 0;"><strong>Category:</strong> ${complaint.category}</p>
+                                    <p style="margin: 5px 0;"><strong>Description:</strong> ${complaint.description}</p>
+                                </div>
+                                <p>For more updates and information about our initiatives, please visit our official website:</p>
+                                <div style="text-align: center; margin: 20px 0;">
+                                    <a href="https://omprakashkhursade.in" style="background-color: #0056b3; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block; font-weight: bold;">Visit omprakashkhursade.in</a>
+                                </div>
+                                <p style="margin-bottom: 0;">Best regards,<br><strong>Omprakash Khursade Office</strong></p>
+                            </div>
+                        </div>
+                    `;
+                    await emailService.sendEmail({
+                        to: complaint.email_address,
+                        subject: `Complaint Registered Successfully - ${complaint.subject}`,
+                        html: citizenHtml
+                    });
+                } catch (e) {
+                    console.error('Failed to send email to citizen:', e);
+                }
+            }
+
+            // Send email to Office
+            try {
+                const officeEmail = process.env.SUPERADMIN_EMAIL || 'prathameshmalode.2@gmail.com';
+                const officeHtml = `
+                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+                        <div style="background-color: #fff3cd; padding: 20px; text-align: center; border-bottom: 1px solid #ffeeba;">
+                            <h2 style="margin: 0; color: #856404;">New Complaint Alert</h2>
+                        </div>
+                        <div style="padding: 20px; color: #555; line-height: 1.6;">
+                            <p>A new complaint has been registered on the portal.</p>
+                            <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0; border: 1px solid #e0e0e0;">
+                                <p style="margin: 5px 0;"><strong>Citizen:</strong> ${complaint.full_name}</p>
+                                <p style="margin: 5px 0;"><strong>Phone:</strong> ${complaint.phone_number}</p>
+                                <p style="margin: 5px 0;"><strong>Email:</strong> ${complaint.email_address || 'N/A'}</p>
+                                <p style="margin: 5px 0;"><strong>Subject:</strong> ${complaint.subject}</p>
+                                <p style="margin: 5px 0;"><strong>Category:</strong> ${complaint.category}</p>
+                                <p style="margin: 5px 0;"><strong>Location:</strong> ${complaint.location}</p>
+                                <p style="margin: 5px 0;"><strong>Ward:</strong> ${complaint.ward || 'N/A'}</p>
+                                <p style="margin: 15px 0 5px 0;"><strong>Description:</strong></p>
+                                <p style="margin: 0; padding: 10px; background-color: #ffffff; border: 1px solid #ddd; border-radius: 4px;">${complaint.description}</p>
+                            </div>
+                            <div style="text-align: center; margin: 20px 0;">
+                                <a href="https://dash.omprakashkhursade.in" style="background-color: #28a745; color: white; text-decoration: none; padding: 10px 20px; border-radius: 5px; display: inline-block; font-weight: bold;">View in Dashboard</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                await emailService.sendEmail({
+                    to: officeEmail,
+                    subject: `New Complaint Registered - ${complaint.subject}`,
+                    html: officeHtml
+                });
+            } catch (e) {
+                console.error('Failed to send email to office:', e);
+            }
+
             res.status(201).json({ success: true, data: complaint });
         } catch (error) {
             next(error);
