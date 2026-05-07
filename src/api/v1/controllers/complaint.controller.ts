@@ -90,7 +90,7 @@ export class ComplaintController {
 
             // Send email to Office
             try {
-                const officeEmail = process.env.SUPERADMIN_EMAIL || 'prathameshmalode.2@gmail.com';
+                const officeEmail = process.env.MUNICIPALITY_MAIL || 'mcmalegaon@gmail.com';
                 const officeHtml = `
                     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
                         <div style="background-color: #fff3cd; padding: 20px; text-align: center; border-bottom: 1px solid #ffeeba;">
